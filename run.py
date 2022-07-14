@@ -1,31 +1,28 @@
 import requests as req
-import json
 import time
 
 def spam(reqId):
 
-    headers = {
-    'authority': 'api.mobilelegends.com',
-    'content-type': 'application/json',
-    'accept': 'application/json',
-    'accept-language': 'en-US,en;q=0.9'
-    }
-
-    params = {
-        'roleId': reqId,
-        'language': 'en',
-    }
-
-    response = req.get('https://api.mobilelegends.com/mlweb/sendMail', params=params, headers=headers)
+    response = req.get('https://api.mobilelegends.com/mlweb/sendMail?roleId='+ str(reqId) + '&language=en')
 
     return response.json()
 
     
 if __name__ == '__main__':
 
-    reqId = input('? ID : ')
-    reqHowMany = input('? How many times : ')
+    reqId = int(input('\n? ID : '))
+    reqHowMuch = int(input('? How much : '))
+    print(' ')
 
-    for i in range(int(reqHowMany)):
+    while True:
 
-        print(spam(reqId))
+        if spam(reqId)['status'] == 'success':
+            print('[ ' + time.strftime("%H:%M:%S") + ' ] Success sent !')
+            time.sleep(60)
+
+        elif spam(reqId)['code'] == '-20023':
+            print('[ ' + time.strftime("%H:%M:%S") + ' ] Error sent ! Invalid ID')
+            break
+
+        else:
+            continue
